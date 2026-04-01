@@ -1,6 +1,46 @@
 # dont-deal
 
+> `dont-deal` 这个名字想表达的是：别为了把活干完、把交易做完、把事情 deal 掉，继续拿自己的命硬换。
+
+> The name `dont-deal` means: do not keep trading your health or your life just to finish the task, close the deal, or push the work through.
+
 ## 中文
+
+### 这是什么
+
+`dont-deal` 是一个给程序员、AI 开发者、长期熬夜工作的白领准备的本地优先技能项目。
+
+
+### 这个版本做的两件事
+
+**第一件：被动感知，让模型知道你最近过得怎么样**
+
+`dont-deal` 会在你授权后，只读分析当前仓库的 git 提交时间戳，推断你近期的睡眠情况——比如上一次提交是凌晨三点，下一次是早上九点，那休息时间大概不超过五小时。
+
+这个推断结果会被写成一份本地快照，并注入你的全局配置（`~/.claude/CLAUDE.md` 或 Codex 对应的 system prompt 路径），让你正在用的模型在帮你写代码的时候，顺带知道一件事：
+
+> 这个人昨晚可能只睡了四小时，今天已经是第三天熬夜了。
+
+不需要你主动说，模型自己就有了背景。
+
+---
+
+**第二件：主动触发，胸口不对劲的时候用**
+
+当你感觉胸口不舒服——闷、紧、压、后背疼、出汗——运行：
+
+```bash
+DONT_DEAL_HOME=./data npm run triage:quick
+```
+
+模型会用中文问你几个简短的问题，结合你当前的疲劳快照，给你一个直接的判断：
+
+- 🔴 **立刻呼救**——不要自己去医院，不要继续工作，先打 120
+- 🟡 **今天尽快就医**——不是现在马上，但今天内必须去
+
+只有这两档输出。没有"再观察观察"，没有"可能是工作压力"。
+
+---
 
 ### 这是什么
 
@@ -8,29 +48,21 @@
 
 它想解决的问题很简单：
 
-- 有些人胸口不舒服时，第一反应不是休息和求助，而是“再 deal 一下”
+- 有些人胸口不舒服时，第一反应不是休息和求助，而是"再 deal 一下"
 - 有些人长期熬夜、睡眠不足、高压工作，已经处在更危险的状态里
 - 大模型平时并不知道用户最近是不是在连续熬夜，也不知道这个人是否有高血压、家族史之类的背景
 
 这个项目的目标不是代替医生，也不是做正式诊断。
 
-它只做两件事：
-
-1. 给模型一些本地背景信息，比如当前时间、当前宿主环境、当前仓库的 git 提交时间，帮助模型判断你最近是不是在硬扛。
-2. 在“胸痛/胸闷/疑似心绞痛或心梗”的场景下，用简单直接的话帮助用户判断：
-   现在是应该立刻呼救，还是应该当天尽快去医院。
-
-一句话说，这个项目是：
-
 > 别让程序员在胸口疼的时候还继续 deal。
 
 ### 为什么做这个项目
 
-很多开发者会把身体报警，当成“熬夜后的正常反应”。
+很多开发者会把身体报警，当成"熬夜后的正常反应"。
 
 但现实里危险信号常常不长得像教材：
 
-- 不一定是“标准胸痛”
+- 不一定是"标准胸痛"
 - 可能是胸口发闷、发紧、像被攥住
 - 可能是后背里面疼
 - 可能像牙疼、下巴酸
@@ -44,14 +76,15 @@
 - 不把熬夜当玩笑
 - 信息不完整时，宁可偏谨慎
 
-### 这个项目现在能做什么
+### 这个版本能做什么
 
 - 读取当前本地时间和时区
 - 识别当前运行环境大致是 Codex、Claude Code 还是 OpenClaw 风格宿主
 - 只读分析当前仓库的 git 提交时间，推断近期是否存在明显熬夜和短睡风险
-- 提供快速模式问答，用中文快速判断更接近：
-  - 红色：立刻呼救
-  - 黄色：今天尽快就医
+- 将疲劳快照注入全局提示词（`~/.claude/CLAUDE.md` 或 Codex 对应路径），无需用户每次手动说明
+- 提供快速模式问答，用中文判断当前情况更接近：
+  - 🔴 红色：立刻呼救
+  - 🟡 黄色：今天尽快就医
 - 将快照、配置和本地历史保存在 `~/.dont-deal/` 或你指定的目录
 
 ### 它不会做什么
@@ -105,6 +138,8 @@ DONT_DEAL_HOME=./data npm run triage:quick
   - `snapshot.json`
   - `events.json`
 
+初始化完成后，快照会自动注入你的全局提示词配置，后续使用 Claude Code 或 Codex 时无需额外操作。
+
 如果你之后希望它记住更长期的健康背景，可以再补 `profile.json` 这类本地资料。
 
 ### 怎么使用
@@ -121,7 +156,7 @@ npm run snapshot
 DONT_DEAL_HOME=./data npm run snapshot
 ```
 
-#### 2. 进入快速模式
+#### 2. 进入快速问诊模式
 
 ```bash
 DONT_DEAL_HOME=./data npm run triage:quick
@@ -143,7 +178,7 @@ DONT_DEAL_HOME=../../data npm run triage:quick
 
 下面这些情况，不要继续工作，不要自己硬扛。
 
-#### 模型建议“立刻呼救”的典型情况
+#### 模型建议"立刻呼救"的典型情况
 
 - 现在胸口还在痛、闷、紧、压迫感明显
 - 疼痛已经持续大约 15 到 20 分钟以上
@@ -156,7 +191,7 @@ DONT_DEAL_HOME=../../data npm run triage:quick
 
 > 先呼救，别自己去医院，别路上继续 deal。
 
-#### 模型建议“今天尽快去医院”的典型情况
+#### 模型建议"今天尽快去医院"的典型情况
 
 - 反复出现胸闷、胸痛，尤其是一活动就更明显
 - 已知有高血压、糖尿病、吸烟、高血脂、家族早发心脏病等风险因素
@@ -169,15 +204,10 @@ DONT_DEAL_HOME=../../data npm run triage:quick
 
 默认保存在 `~/.dont-deal/`，或者你用 `DONT_DEAL_HOME` 指定的目录。
 
-- `config.json`
-  - 语言偏好
-  - 是否完成首次使用
-- `snapshot.json`
-  - 当前时间、时区、宿主、git 时间线推断出的疲劳快照
-- `events.json`
-  - 每次快速模式的本地记录
-- `profile.json`
-  - 用户主动填写的长期健康背景
+- `config.json` — 语言偏好、是否完成首次使用
+- `snapshot.json` — 当前时间、时区、宿主、git 时间线推断出的疲劳快照
+- `events.json` — 每次快速模式的本地记录
+- `profile.json` — 用户主动填写的长期健康背景
 
 这些数据默认只在本地，不上传。
 
@@ -204,7 +234,7 @@ dont-deal/
 - OpenClaw
 - ClawHub 风格的 skills 分发
 
-这里要区分两件事：
+一个实际区别值得说清楚：
 
 - `npm i -g clawhub` 安装的是 ClawHub 命令行
 - `clawhub install <skill>` 安装的是 skill 包本身
@@ -231,6 +261,37 @@ dont-deal/
 
 ## English
 
+### What This Version Does
+
+**First: passive context — let the model know how you've been doing lately**
+
+With your permission, `dont-deal` reads git commit timestamps from the current repository — read-only — and infers your recent sleep pattern. If your last commit was at 3 AM and the next one came in at 9 AM, the estimated rest window is under six hours.
+
+That inference gets written as a local snapshot and injected into your global config (`~/.claude/CLAUDE.md` or the equivalent Codex system prompt path), so the model you're working with already knows:
+
+> This person may have slept four hours last night. This is the third consecutive late night.
+
+You do not need to explain it. The model has the context.
+
+---
+
+**Second: active triage — use this when something feels wrong**
+
+If you feel chest pressure, tightness, heaviness, back pain, or sweating, run:
+
+```bash
+DONT_DEAL_HOME=./data npm run triage:quick
+```
+
+The model asks a few short questions and gives you one of two answers:
+
+- 🔴 **Call for emergency help now** — do not drive yourself, do not keep working
+- 🟡 **Get medical care today** — not an immediate emergency, but do not put it off
+
+Only two outputs. No "wait and see." No "probably just stress."
+
+---
+
 ### What This Is
 
 `dont-deal` is a local-first skill project for programmers, AI builders, and other people who spend too much time working late.
@@ -243,25 +304,13 @@ It is built around one practical problem:
 
 This project is not trying to replace a doctor.
 
-It only tries to do two things:
-
-1. give the model a small amount of local context, such as local time, host environment, and git activity timing
-2. help the user answer one urgent question in plain language:
-   should I call for emergency help now, or do I need urgent same-day medical care?
+> Don't let programmers keep pushing through chest pain.
 
 ### Why This Project Exists
 
 Dangerous heart-related symptoms do not always sound dramatic or textbook-correct.
 
-People may describe them as:
-
-- pressure
-- tightness
-- heaviness
-- pain deep in the back
-- jaw pain
-- toothache-like discomfort
-- sweating, shortness of breath, nausea, or dizziness
+People may describe them as pressure, tightness, heaviness, pain deep in the back, jaw pain, toothache-like discomfort, or sweating with shortness of breath and nausea.
 
 If the user cannot describe it clearly and the model has no context, it is too easy to downplay the situation.
 
@@ -274,13 +323,12 @@ If the user cannot describe it clearly and the model has no context, it is too e
 ### What It Can Do Right Now
 
 - read local time and timezone
-- detect the current host environment in a narrow way
-- read git commit timestamps from the current repository only
-- estimate recent fatigue and short-sleep risk
-- run a quick triage flow that narrows the answer to:
-  - red: call emergency help now
-  - yellow: get urgent medical review today
-- save local snapshots and local-only history
+- detect the current host environment (Codex, Claude Code, or OpenClaw-style)
+- read git commit timestamps from the current repository only — read-only, no modifications
+- estimate recent fatigue and short-sleep risk from that data
+- inject the fatigue snapshot into your global prompt config so the model has background context without you having to explain it each session
+- run a quick triage flow that outputs only two levels: call for help now, or get care today
+- save local snapshots and history under `~/.dont-deal/` or a path you specify
 
 ### What It Does Not Do
 
@@ -302,7 +350,7 @@ cd dont-deal
 
 #### Option 2: Use the self-contained skill package
 
-The repository already includes a self-contained publishable skill package:
+The repository includes a self-contained publishable skill package at:
 
 `skills/dont-deal-triage/`
 
@@ -328,12 +376,11 @@ On first run it will:
 - show bilingual Chinese and English prompts
 - ask a few short questions
 - detect the user's preferred language from the session
-- write local files such as:
-  - `config.json`
-  - `snapshot.json`
-  - `events.json`
+- write local files: `config.json`, `snapshot.json`, `events.json`
 
-Later, you can also maintain a local `profile.json` for longer-term health context.
+After initialization, the snapshot is automatically injected into your global prompt config. No additional steps are needed for Claude Code or Codex to pick it up.
+
+If you want to add longer-term health context later, you can maintain a local `profile.json`.
 
 ### Usage
 
@@ -343,7 +390,7 @@ Later, you can also maintain a local `profile.json` for longer-term health conte
 npm run snapshot
 ```
 
-If the host cannot write to the home directory, set a writable local path:
+If the host cannot write to the home directory:
 
 ```bash
 DONT_DEAL_HOME=./data npm run snapshot
@@ -355,10 +402,10 @@ DONT_DEAL_HOME=./data npm run snapshot
 DONT_DEAL_HOME=./data npm run triage:quick
 ```
 
-This mode is intentionally narrow. It is trying to answer only this:
+Two questions this mode is trying to answer:
 
-- is this dangerous enough to justify calling emergency help now?
-- if not, is this still serious enough that the user should get medical care today?
+- is this dangerous enough to call for emergency help right now?
+- if not, is it still serious enough to require same-day medical care?
 
 #### 3. Test the self-contained skill package directly
 
@@ -367,45 +414,40 @@ cd skills/dont-deal-triage
 DONT_DEAL_HOME=../../data npm run triage:quick
 ```
 
-### When the Model Should Tell the User to See a Doctor
+### When the Model Will Tell You to Act
 
-#### Situations that should push toward emergency help now
+#### Emergency: call for help now
 
 - chest pain, pressure, tightness, or heaviness is happening right now
 - symptoms have lasted around 15 to 20 minutes or longer
 - pain spreads to the arm, back, neck, jaw, or gumline
 - there is shortness of breath, sweating, nausea, dizziness, or near-fainting
-- symptoms start at rest
-- symptoms are getting worse or returning again after partial relief
+- symptoms started at rest, not from physical exertion
+- symptoms are getting worse or returning after partial relief
 
-In those cases, the project should push a clear message:
+In those cases:
 
-> call for help now, do not drive yourself, and do not keep working through it
+> Call for help now. Do not drive yourself. Do not keep working.
 
-#### Situations that should still lead to urgent same-day medical care
+#### Urgent: get medical care today
 
 - recurrent chest discomfort, especially with exertion
-- known cardiovascular risk factors such as hypertension, diabetes, smoking, high cholesterol, or strong family history
-- a known angina pattern that has changed
-- symptoms that are concerning even if they do not yet meet the strongest emergency pattern
+- known risk factors: hypertension, diabetes, smoking, high cholesterol, or family history of early heart disease
+- a known angina pattern that has changed in character
+- something feels wrong even if the strongest emergency criteria are not met
 
-The user should not treat that as something to “sleep off” while continuing to work.
+Do not treat that as something to sleep off while finishing a sprint.
 
 ### Local Data
 
-By default data is stored in `~/.dont-deal/`, or in the path set through `DONT_DEAL_HOME`.
+Stored in `~/.dont-deal/` by default, or in the path set through `DONT_DEAL_HOME`.
 
-- `config.json`
-  - language preference
-  - first-run state
-- `snapshot.json`
-  - local time, timezone, host context, and git-derived fatigue snapshot
-- `events.json`
-  - local records from quick triage runs
-- `profile.json`
-  - user-provided longer-term health background
+- `config.json` — language preference, first-run state
+- `snapshot.json` — local time, timezone, host context, git-derived fatigue snapshot
+- `events.json` — local records from quick triage runs
+- `profile.json` — user-provided longer-term health background
 
-Everything is local by default.
+Everything is local by default. Nothing is uploaded.
 
 ### Repository Layout
 
@@ -430,20 +472,15 @@ dont-deal/
 - OpenClaw
 - ClawHub-style skill distribution
 
-One practical distinction matters:
-
-- `npm i -g clawhub` installs the ClawHub CLI
-- `clawhub install <skill>` installs the skill bundle itself
-
-The nested `package.json` in this repository exists so the bundled Node scripts can run cleanly inside the self-contained skill package. It is not meant to turn the skill into a standard npm-first product.
+One practical distinction: `npm i -g clawhub` installs the ClawHub CLI. `clawhub install <skill>` installs the skill bundle. The nested `package.json` in this repository exists so the bundled Node scripts can run cleanly inside the self-contained skill package — it is not meant to make the skill a standard npm package.
 
 ### Medical Safety Note
 
 This project is not a medical device and does not provide a formal medical diagnosis.
 
-It is based on public emergency guidance and is intentionally designed to make the model more cautious, not less.
+It is based on public emergency guidance and is intentionally designed to make the model more cautious in ambiguous situations, not less.
 
-If someone is actively experiencing chest pain, chest pressure, shortness of breath, sweating, or dizziness, real-world medical help matters more than any chat interface.
+If you are actively experiencing chest pain, chest pressure, shortness of breath, sweating, or dizziness, real-world medical help takes priority over any chat interface.
 
 References:
 
