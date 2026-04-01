@@ -1,0 +1,24 @@
+{
+  "name": "dont-deal",
+  "version": "0.1.0",
+  "description": "Developer fatigue sensing and chest-pain triage scaffolding for local AI coding hosts.",
+  "type": "module",
+  "bin": {
+    "dont-deal": "./src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "snapshot": "node src/index.js",
+    "check": "node --check src/index.js && node --check src/git-sleep.js && node --check src/host-detect.js && node --check src/system-info.js && node --check src/config-store.js && node --check src/profile-store.js && node --check src/triage-engine.js && node --check src/quick-triage-cli.js && npm --prefix skills/dont-deal-triage run check",
+    "triage:example": "node src/triage-example.js",
+    "triage:quick": "node src/quick-triage-cli.js"
+  },
+  "keywords": [
+    "health",
+    "triage",
+    "developer",
+    "fatigue",
+    "skill"
+  ],
+  "license": "MIT"
+}
