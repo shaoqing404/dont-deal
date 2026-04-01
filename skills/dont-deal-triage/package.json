@@ -6,11 +6,15 @@
   "type": "module",
   "bin": {
     "dont-deal-snapshot": "./scripts/index.js",
-    "dont-deal-triage-quick": "./scripts/quick-triage-cli.js"
+    "dont-deal-triage-quick": "./scripts/quick-triage-cli.js",
+    "dont-deal-profile-init": "./scripts/profile-init-cli.js",
+    "dont-deal-prompt-inject": "./scripts/prompt-injector.js"
   },
   "scripts": {
     "snapshot": "node scripts/index.js",
     "triage:quick": "node scripts/quick-triage-cli.js",
-    "check": "node --check scripts/index.js && node --check scripts/git-sleep.js && node --check scripts/host-detect.js && node --check scripts/system-info.js && node --check scripts/config-store.js && node --check scripts/profile-store.js && node --check scripts/triage-engine.js && node --check scripts/quick-triage-cli.js"
+    "profile:init": "node scripts/profile-init-cli.js",
+    "prompt:inject": "node scripts/prompt-injector.js",
+    "check": "node --check scripts/index.js && node --check scripts/git-sleep.js && node --check scripts/host-detect.js && node --check scripts/system-info.js && node --check scripts/config-store.js && node --check scripts/profile-store.js && node --check scripts/triage-engine.js && node --check scripts/quick-triage-cli.js && node --check scripts/profile-init-cli.js && node --check scripts/prompt-injector.js"
   }
 }

@@ -142,6 +142,14 @@ DONT_DEAL_HOME=./data npm run triage:quick
 
 如果你之后希望它记住更长期的健康背景，可以再补 `profile.json` 这类本地资料。
 
+如果你想初始化长期健康背景，可以运行：
+
+```bash
+DONT_DEAL_HOME=./data npm run profile:init
+```
+
+它会把你愿意保留在本地的信息写进 `profile.json`，并生成一份 `health-summary.md`。
+
 ### 怎么使用
 
 #### 1. 看本地疲劳快照
@@ -173,6 +181,26 @@ DONT_DEAL_HOME=./data npm run triage:quick
 cd skills/dont-deal-triage
 DONT_DEAL_HOME=../../data npm run triage:quick
 ```
+
+#### 4. 初始化长期背景并注入全局提示词
+
+```bash
+DONT_DEAL_HOME=./data npm run profile:init
+```
+
+如果你只想单独重写健康摘要并注入提示词，可以运行：
+
+```bash
+DONT_DEAL_HOME=./data npm run prompt:inject
+```
+
+当前实现会：
+
+- 生成 `health-summary.md`
+- 默认尝试写入 `~/.claude/CLAUDE.md`
+- 如果你给了 `CODEX_GLOBAL_PROMPT_PATH`，也会在那个路径写入 `dont-deal` 自己的管理块
+
+它不会粗暴覆盖整份文件，只会维护 `dont-deal` 自己的标记区块。
 
 ### 什么时候一定要去医院，甚至立刻呼救
 
@@ -382,6 +410,14 @@ After initialization, the snapshot is automatically injected into your global pr
 
 If you want to add longer-term health context later, you can maintain a local `profile.json`.
 
+To initialize longer-term health context:
+
+```bash
+DONT_DEAL_HOME=./data npm run profile:init
+```
+
+This writes local profile data into `profile.json` and generates `health-summary.md`.
+
 ### Usage
 
 #### 1. Generate a local fatigue snapshot
@@ -413,6 +449,26 @@ Two questions this mode is trying to answer:
 cd skills/dont-deal-triage
 DONT_DEAL_HOME=../../data npm run triage:quick
 ```
+
+#### 4. Initialize profile data and inject prompt context
+
+```bash
+DONT_DEAL_HOME=./data npm run profile:init
+```
+
+If you only want to regenerate the summary and prompt block:
+
+```bash
+DONT_DEAL_HOME=./data npm run prompt:inject
+```
+
+The current implementation:
+
+- generates `health-summary.md`
+- writes a managed block into `~/.claude/CLAUDE.md` by default
+- also writes to `CODEX_GLOBAL_PROMPT_PATH` when that env var is set
+
+It updates only the `dont-deal` managed block instead of overwriting the entire file.
 
 ### When the Model Will Tell You to Act
 
